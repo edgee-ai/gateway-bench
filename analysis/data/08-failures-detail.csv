@@ -1,0 +1,11 @@
+gateway,model,continent,country_code,failures,error_sample
+Anthropic (Direct),claude-sonnet-4-6,AS,HK,28,"HTTP 403: {
+  ""error"": {
+    ""type"": ""forbidden"",
+    ""message"": ""Request not allowed""
+  }
+}"
+Cloudflare,gpt-5.4,AS,HK,28,"403 Country, region, or territory not supported"
+OpenAI (Direct),gpt-5.4,AS,HK,28,"403 Country, region, or territory not supported"
+OpenRouter,gpt-5.4,AS,HK,28,403 This model is not available in your region.
+OpenRouter,claude-sonnet-4-6,AS,HK,28,"HTTP 403: {""error"":{""message"":""This model is not available in your region."",""code"":403}}"

@@ -1,0 +1,9 @@
+gateway,n,failures,success_rate,failing_countries
+Edgee,2350,0,1,0
+TrueFoundry,2328,0,1,0
+Kong,2322,0,1,0
+Vercel,2322,0,1,0
+Cloudflare,2322,28,0.9879,1
+OpenRouter,2350,56,0.9762,1
+OpenAI (Direct),1175,28,0.9762,1
+Anthropic (Direct),1175,28,0.9762,1

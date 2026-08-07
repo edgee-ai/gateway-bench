@@ -1,0 +1,15 @@
+gateway,model,flow_host,flow_server,pct_cloudflare_ray,distinct_ips
+Anthropic (Direct),claude-sonnet-4-6,api.anthropic.com,cloudflare,1,1
+Cloudflare,claude-sonnet-4-6,gateway.ai.cloudflare.com,cloudflare,1,2
+Cloudflare,gpt-5.4,gateway.ai.cloudflare.com,cloudflare,1,0
+Edgee,claude-sonnet-4-6,edgee.io,,0,98
+Edgee,gpt-5.4,edgee.io,,0,98
+Kong,claude-sonnet-4-6,44e4ea92a8.eu.serverless.gateways.konggateway.com,cloudflare,1,0
+Kong,gpt-5.4,44e4ea92a8.eu.serverless.gateways.konggateway.com,cloudflare,1,0
+OpenAI (Direct),gpt-5.4,api.openai.com,cloudflare,1,0
+OpenRouter,claude-sonnet-4-6,openrouter.ai,cloudflare,1,2
+OpenRouter,gpt-5.4,openrouter.ai,cloudflare,1,0
+TrueFoundry,claude-sonnet-4-6,gateway.truefoundry.ai,cloudflare,1,0
+TrueFoundry,gpt-5.4,gateway.truefoundry.ai,cloudflare,1,0
+Vercel,claude-sonnet-4-6,ai-gateway.vercel.sh,Vercel,0,8
+Vercel,gpt-5.4,ai-gateway.vercel.sh,Vercel,0,0

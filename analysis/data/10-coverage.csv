@@ -1,0 +1,29 @@
+day,gateway,model,n,batches,countries
+2026-08-05,Anthropic (Direct),claude-sonnet-4-6,666,665,28
+2026-08-05,Cloudflare,claude-sonnet-4-6,656,655,28
+2026-08-05,Cloudflare,gpt-5.4,656,655,28
+2026-08-05,Edgee,claude-sonnet-4-6,666,665,28
+2026-08-05,Edgee,gpt-5.4,666,665,28
+2026-08-05,Kong,claude-sonnet-4-6,656,655,28
+2026-08-05,Kong,gpt-5.4,656,655,28
+2026-08-05,OpenAI (Direct),gpt-5.4,666,665,28
+2026-08-05,OpenRouter,claude-sonnet-4-6,666,665,28
+2026-08-05,OpenRouter,gpt-5.4,666,665,28
+2026-08-05,TrueFoundry,claude-sonnet-4-6,656,655,28
+2026-08-05,TrueFoundry,gpt-5.4,660,659,28
+2026-08-05,Vercel,claude-sonnet-4-6,656,655,28
+2026-08-05,Vercel,gpt-5.4,656,655,28
+2026-08-06,Anthropic (Direct),claude-sonnet-4-6,509,508,28
+2026-08-06,Cloudflare,claude-sonnet-4-6,505,504,28
+2026-08-06,Cloudflare,gpt-5.4,505,504,28
+2026-08-06,Edgee,claude-sonnet-4-6,509,508,28
+2026-08-06,Edgee,gpt-5.4,509,508,28
+2026-08-06,Kong,claude-sonnet-4-6,505,504,28
+2026-08-06,Kong,gpt-5.4,505,504,28
+2026-08-06,OpenAI (Direct),gpt-5.4,509,508,28
+2026-08-06,OpenRouter,claude-sonnet-4-6,509,508,28
+2026-08-06,OpenRouter,gpt-5.4,509,508,28
+2026-08-06,TrueFoundry,claude-sonnet-4-6,505,504,28
+2026-08-06,TrueFoundry,gpt-5.4,507,506,28
+2026-08-06,Vercel,claude-sonnet-4-6,505,504,28
+2026-08-06,Vercel,gpt-5.4,505,504,28

@@ -1,0 +1,13 @@
+model,gateway,paired_n,delta_p10,delta_p50,delta_p90,asymmetry,edgee_win_rate
+claude-sonnet-4-6,Kong,1165,3009,3854,4815,7824,0.9828
+claude-sonnet-4-6,Vercel,1165,-694,87,1126,432,0.6069
+claude-sonnet-4-6,OpenRouter,1151,-755,83,1064,309,0.5943
+claude-sonnet-4-6,TrueFoundry,1165,-789,15,824,35,0.509
+claude-sonnet-4-6,Cloudflare,1165,-926,-40,807,-119,0.4515
+claude-sonnet-4-6,Anthropic (Direct),1151,-994,-83,733,-261,0.3953
+gpt-5.4,Kong,1165,357,879,1455,1812,0.9519
+gpt-5.4,OpenRouter,1151,-231,197,938,707,0.7637
+gpt-5.4,Vercel,1165,-286,126,751,465,0.6918
+gpt-5.4,TrueFoundry,1171,-332,48,446,114,0.5781
+gpt-5.4,Cloudflare,1137,-425,18,365,-60,0.5374
+gpt-5.4,OpenAI (Direct),1151,-448,-26,381,-67,0.4509

@@ -1,0 +1,13 @@
+model,gateway,paired_n,overhead_p50,overhead_p90
+claude-sonnet-4-6,Cloudflare,1137,25,921
+claude-sonnet-4-6,Edgee,1151,83,994
+claude-sonnet-4-6,TrueFoundry,1137,100,985
+claude-sonnet-4-6,Vercel,1137,164,1165
+claude-sonnet-4-6,OpenRouter,1151,182,1100
+claude-sonnet-4-6,Kong,1137,3919,4893
+gpt-5.4,Edgee,1151,26,448
+gpt-5.4,Cloudflare,1137,42,389
+gpt-5.4,TrueFoundry,1143,85,487
+gpt-5.4,Vercel,1137,155,792
+gpt-5.4,OpenRouter,1151,234,918
+gpt-5.4,Kong,1137,905,1458

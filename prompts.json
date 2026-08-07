@@ -1,0 +1,15 @@
+{
+  "scenarios": [
+    {
+      "name": "simple",
+      "description": "Simple single-message prompt",
+      "maxTokens": 3000,
+      "messages": [
+        {
+          "role": "user",
+          "content": "In a world increasingly shaped by rapid advances in artificial intelligence, we seek to understand the capabilities and limitations of language models. Compose a concise overview (maximum 100 words) that briefly touches on: \n\n1) One major milestone in language model development, \n2) The core mechanism of how transformer models generate text, \n3) One key ethical concern regarding large language models, and \n4) A balanced concluding thought on AI text-generation adoption.\n\nYour response should demonstrate clear reasoning, reference technical concepts where appropriate, and span a maximum of 100 words."
+        }
+      ]
+    }
+  ]
+}

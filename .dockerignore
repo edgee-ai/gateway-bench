@@ -1,0 +1,9 @@
+node_modules
+dist
+.env
+service-account-key.json
+*.log
+.DS_Store
+.git
+.gitignore
+README.md

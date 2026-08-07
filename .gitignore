@@ -1,0 +1,13 @@
+node_modules
+dist
+.env
+*.log
+.DS_Store
+
+# Local, deployment-specific Makefile overrides (GCP project, image names…)
+Makefile.local
+
+# Service account key files (legacy - no longer needed, uses env vars now)
+*-key.json
+*service-account*.json
+curl.sh

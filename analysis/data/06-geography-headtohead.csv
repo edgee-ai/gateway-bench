@@ -1,0 +1,61 @@
+model,continent,gateway,paired_n,delta_p50,delta_p90,edgee_win_rate
+claude-sonnet-4-6,AS,Kong,336,3862,4835,0.9821
+claude-sonnet-4-6,AS,OpenRouter,311,103,1176,0.5949
+claude-sonnet-4-6,AS,Vercel,336,66,1159,0.5655
+claude-sonnet-4-6,AS,TrueFoundry,336,0,923,0.5
+claude-sonnet-4-6,AS,Cloudflare,336,-91,836,0.378
+claude-sonnet-4-6,AS,Anthropic (Direct),311,-138,871,0.328
+claude-sonnet-4-6,EU,Kong,363,3718,4687,0.9752
+claude-sonnet-4-6,EU,OpenRouter,371,71,1105,0.5984
+claude-sonnet-4-6,EU,Vercel,363,68,947,0.5895
+claude-sonnet-4-6,EU,TrueFoundry,363,36,769,0.5372
+claude-sonnet-4-6,EU,Cloudflare,363,-29,756,0.4738
+claude-sonnet-4-6,EU,Anthropic (Direct),371,-49,708,0.4528
+claude-sonnet-4-6,NA,Kong,328,3938,4770,0.9878
+claude-sonnet-4-6,NA,Vercel,328,136,1236,0.6768
+claude-sonnet-4-6,NA,OpenRouter,330,90,898,0.5818
+claude-sonnet-4-6,NA,Cloudflare,328,2,807,0.5061
+claude-sonnet-4-6,NA,TrueFoundry,328,-8,920,0.4878
+claude-sonnet-4-6,NA,Anthropic (Direct),330,-67,614,0.4091
+claude-sonnet-4-6,OC,Kong,56,3926,4777,1
+claude-sonnet-4-6,OC,Vercel,56,146,1099,0.6429
+claude-sonnet-4-6,OC,OpenRouter,57,74,1202,0.6491
+claude-sonnet-4-6,OC,TrueFoundry,56,25,757,0.5
+claude-sonnet-4-6,OC,Cloudflare,56,-32,673,0.4107
+claude-sonnet-4-6,OC,Anthropic (Direct),57,-51,891,0.4211
+claude-sonnet-4-6,SA,Kong,54,3778,5767,0.9815
+claude-sonnet-4-6,SA,OpenRouter,54,142,995,0.6667
+claude-sonnet-4-6,SA,TrueFoundry,54,32,760,0.5556
+claude-sonnet-4-6,SA,Vercel,54,31,1419,0.5926
+claude-sonnet-4-6,SA,Cloudflare,54,-66,1311,0.463
+claude-sonnet-4-6,SA,Anthropic (Direct),54,-149,600,0.3519
+gpt-5.4,AS,Kong,336,1041,1527,0.9464
+gpt-5.4,AS,OpenRouter,311,294,941,0.8006
+gpt-5.4,AS,Vercel,336,159,890,0.6815
+gpt-5.4,AS,TrueFoundry,337,32,464,0.543
+gpt-5.4,AS,Cloudflare,308,6,374,0.5065
+gpt-5.4,AS,OpenAI (Direct),311,-17,385,0.4759
+gpt-5.4,EU,Kong,363,640,1083,0.9421
+gpt-5.4,EU,OpenRouter,371,158,898,0.7655
+gpt-5.4,EU,Vercel,363,89,638,0.6584
+gpt-5.4,EU,TrueFoundry,366,70,447,0.6066
+gpt-5.4,EU,Cloudflare,363,43,369,0.584
+gpt-5.4,EU,OpenAI (Direct),371,-45,356,0.407
+gpt-5.4,NA,Kong,328,970,1466,0.9634
+gpt-5.4,NA,Vercel,328,136,724,0.7439
+gpt-5.4,NA,OpenRouter,330,128,897,0.703
+gpt-5.4,NA,TrueFoundry,329,44,446,0.5927
+gpt-5.4,NA,Cloudflare,328,7,324,0.5213
+gpt-5.4,NA,OpenAI (Direct),330,-26,388,0.4394
+gpt-5.4,OC,Kong,56,1151,1618,0.9643
+gpt-5.4,OC,OpenRouter,57,325,814,0.9298
+gpt-5.4,OC,Vercel,56,222,1235,0.8393
+gpt-5.4,OC,Cloudflare,56,79,422,0.5714
+gpt-5.4,OC,TrueFoundry,57,45,488,0.5789
+gpt-5.4,OC,OpenAI (Direct),57,24,262,0.5965
+gpt-5.4,SA,Kong,54,925,1375,0.9815
+gpt-5.4,SA,OpenRouter,54,176,652,0.7778
+gpt-5.4,SA,Vercel,54,79,658,0.6481
+gpt-5.4,SA,TrueFoundry,54,52,436,0.6111
+gpt-5.4,SA,Cloudflare,54,13,278,0.5556
+gpt-5.4,SA,OpenAI (Direct),54,8,442,0.5185
