@@ -15,7 +15,7 @@ competitors.
 
 Everything behind it is in [`analysis/data/`](analysis/data/): the full per-request export,
 one derived CSV per section of the report, and the SQL to regenerate each of them. Any figure
-in the report can be recomputed from those files, or reproduced with `gateway-bench rank`.
+in the report can be recomputed from those files, or reproduced with `npm run bench rank`.
 
 A few conventions the report relies on, if you plan to read the data directly:
 
@@ -131,22 +131,12 @@ Or with custom options:
 npm run bench run --iterations 5 --parallel --provider openai
 ```
 
-### 6. View Results
-
-Start the web dashboard:
-
-```bash
-npm run web
-```
-
-Then open http://localhost:3000 in your browser.
-
 ## CLI Commands
 
 ### Run Benchmarks
 
 ```bash
-gateway-bench run [options]
+npm run bench run [options]
 ```
 
 Options:
@@ -178,7 +168,7 @@ npm run bench run --provider openai
 ### List Gateways
 
 ```bash
-gateway-bench list
+npm run bench list
 ```
 
 Shows which gateways are configured and available.
@@ -186,7 +176,7 @@ Shows which gateways are configured and available.
 ### Rank Gateway Performance
 
 ```bash
-gateway-bench rank [options]
+npm run bench rank [options]
 ```
 
 Queries the BigQuery results table and ranks gateways. Requires `roles/bigquery.jobUser`
@@ -207,13 +197,13 @@ Options:
 **Examples:**
 ```bash
 # Ranking for one model over a window
-gateway-bench rank --model gpt-5.4 --from 2026-07-31
+npm run bench rank --model gpt-5.4 --from 2026-07-31
 
 # Head-to-head: how much slower is each gateway than Edgee, same batch, same region?
-gateway-bench rank --vs Edgee --from 2026-07-31
+npm run bench rank --vs Edgee --from 2026-07-31
 
 # Per-continent breakdown, markdown table ready to paste into an article
-gateway-bench rank --model gpt-5.4 --group-by continent --format md
+npm run bench rank --model gpt-5.4 --group-by continent --format md
 ```
 
 #### Methodology
