@@ -23,7 +23,7 @@ SCHEDULER_REGION=${SCHEDULER_REGION:-europe-west1}
 # Minute of the hour the first pool fires
 START_MINUTE=${START_MINUTE:-1}
 # Hours of the day the jobs fire (4 times per day, every 6h)
-HOURS=${HOURS:-0,6,8,12,18}
+HOURS=${HOURS:-0,6,16}
 # Number of jobs allowed to fire at the same minute
 POOL_SIZE=${POOL_SIZE:-5}
 # Service account used by Cloud Scheduler to call the Cloud Run Jobs API.
