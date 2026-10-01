@@ -25,6 +25,9 @@ RUN npm run build
 # Remove dev dependencies to reduce image size
 RUN npm prune --production
 
+# Run as the unprivileged user shipped with the node image
+USER node
+
 # Expose web server port
 EXPOSE 3000
 
