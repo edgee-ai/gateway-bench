@@ -15,7 +15,8 @@ export interface PromptTool {
 // Which API surface / transport a request uses.
 //   'openai'    => POST /v1/chat/completions (OpenAI SDK)
 //   'anthropic' => POST /v1/messages (Anthropic SDK)
-export type ApiMethod = 'openai' | 'anthropic';
+//   'responses' => POST /responses relative to the gateway base URL
+export type ApiMethod = 'openai' | 'anthropic' | 'responses';
 
 // One raw streamed chunk captured for diagnostics (see `inspect` CLI command).
 // Used to verify whether a gateway "fakes" TTFT by emitting an early empty /
@@ -31,7 +32,8 @@ export interface ChunkSample {
 
 // How to build an Anthropic (messages) client pointed at a gateway's own host.
 export interface AnthropicClientConfig {
-  baseURL: string; // host root; the Anthropic SDK appends /v1/messages
+  baseURL: string; // Messages endpoint base URL
+  messagesPath?: string; // Defaults to /v1/messages
   authStyle: 'bearer' | 'x-api-key';
   extraHeaders?: Record<string, string>;
 }

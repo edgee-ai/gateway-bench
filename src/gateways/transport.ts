@@ -106,7 +106,8 @@ export interface TransportOutcome {
 
 // Connection details for the Anthropic Messages endpoint of a gateway (or Anthropic direct).
 export interface AnthropicConnection {
-  baseURL: string; // host root; we POST to `${baseURL}/v1/messages`
+  baseURL: string;
+  messagesPath?: string; // Defaults to /v1/messages
   authStyle: 'bearer' | 'x-api-key';
   apiKey: string;
   extraHeaders?: Record<string, string>;
@@ -119,6 +120,7 @@ export async function runWarmup(
   client: OpenAI | undefined,
   conn: AnthropicConnection | undefined,
   config: BenchmarkConfig,
+  extraBody: Record<string, unknown> = {},
 ): Promise<void> {
   const warmConfig: BenchmarkConfig = {
     ...config,
@@ -132,13 +134,76 @@ export async function runWarmup(
   try {
     const api = config.api ?? 'openai';
     if (api === 'anthropic' && conn) {
-      await runAnthropicTransport(conn, warmConfig, Date.now());
+      await runAnthropicTransport(conn, warmConfig, Date.now(), extraBody);
+    } else if (client && api === 'responses') {
+      await runResponsesTransport(client, warmConfig, Date.now(), extraBody);
     } else if (client) {
-      await runOpenAITransport(client, warmConfig, Date.now());
+      await runOpenAITransport(client, warmConfig, Date.now(), extraBody);
     }
   } catch {
     // warm-up failures must not affect the measured run
   }
+}
+
+// Responses uses the gateway's base URL and authentication, just like Chat.
+export async function runResponsesTransport(
+  client: OpenAI,
+  config: BenchmarkConfig,
+  startTime: number,
+  extraBody: Record<string, unknown> = {},
+): Promise<TransportOutcome> {
+  const { data: events, response } = await client.responses.create({
+    ...extraBody,
+    model: config.model,
+    input: config.messages ?? [{ role: 'user', content: config.prompt }],
+    max_output_tokens: config.maxTokens ?? 3000,
+    ...(config.tools ? {
+      tools: config.tools.map((tool) => ({
+        type: tool.type,
+        ...tool.function,
+        strict: false,
+      })),
+    } : {}),
+    stream: true,
+    store: false,
+  }).withResponse();
+  const flow = buildFlow(new URL(client.baseURL).hostname, response.status, response.headers, startTime);
+  let text = '';
+  let ttft = 0;
+  let receivedContent = false;
+  let modelUsed = config.model;
+  let finishReason = '';
+  const chunkLog: ChunkSample[] = [];
+
+  for await (const event of events) {
+    if (event.type === 'error') throw new Error(event.message);
+    if (event.type === 'response.failed') {
+      throw new Error(event.response.error?.message ?? 'Responses request failed');
+    }
+    if ('response' in event && event.response.model) modelUsed = event.response.model;
+    // Lifecycle/reasoning events must not count as the first output token.
+    const delta = event.type === 'response.output_text.delta'
+      || event.type === 'response.refusal.delta'
+      || event.type === 'response.function_call_arguments.delta' ? event.delta : '';
+    const isFirst = !receivedContent && delta.length > 0;
+    if (isFirst) {
+      ttft = Date.now() - startTime;
+      receivedContent = true;
+    }
+    text += delta;
+    if (chunkLog.length < (config.debugChunks ?? 0)) {
+      chunkLog.push({ index: chunkLog.length, atMs: Date.now() - startTime,
+        kind: event.type, text: delta, countsAsTtft: isFirst,
+        raw: JSON.stringify(event).slice(0, 400) });
+    }
+    if (event.type === 'response.completed') finishReason = 'completed';
+    if (event.type === 'response.incomplete') {
+      finishReason = event.response.incomplete_details?.reason ?? 'incomplete';
+    }
+  }
+  if (config.debugChunks && config.onChunkLog) config.onChunkLog(chunkLog);
+  if (!finishReason) throw new Error('Responses stream ended without a terminal event');
+  return { response: text, ttft, totalTime: Date.now() - startTime, modelUsed, finishReason, flow };
 }
 
 // OpenAI Chat Completions transport (POST /v1/chat/completions).
@@ -146,19 +211,22 @@ export async function runOpenAITransport(
   client: OpenAI,
   config: BenchmarkConfig,
   startTime: number,
+  extraBody: Record<string, unknown> = {},
 ): Promise<TransportOutcome> {
   let ttft = 0;
   let firstTokenReceived = false;
 
   const messages = config.messages || [{ role: 'user' as const, content: config.prompt }];
 
-  // GPT-5 models use max_completion_tokens instead of max_tokens
-  const isGpt5Model = config.model.includes('gpt-5') || config.model.includes('gpt5');
-  const tokenParam = isGpt5Model
+  // GPT-5 and GPT-6 require max_completion_tokens on Chat Completions.
+  // Match gateway prefixes/suffixes too (e.g. @benchmark-app/gpt-6-luna:openai).
+  const usesCompletionTokens = /(?:^|\/)gpt-?[56](?:[.-]|:|$)/i.test(config.model);
+  const tokenParam = usesCompletionTokens
     ? { max_completion_tokens: config.maxTokens || 3000 }
     : { max_tokens: config.maxTokens || 3000 };
 
   const stream = await client.chat.completions.create({
+    ...extraBody,
     model: config.model,
     messages,
     ...tokenParam,
@@ -234,9 +302,16 @@ function parseMessagesEvent(obj: Record<string, unknown>): { text: string; finis
 
   // Anthropic native
   const type = obj.type as string | undefined;
+  if (type === 'error') {
+    const error = obj.error as { message?: string } | undefined;
+    throw new Error(error?.message ?? 'Messages stream error');
+  }
   const delta = obj.delta as Record<string, unknown> | undefined;
   if (type === 'content_block_delta' && delta?.type === 'text_delta' && typeof delta.text === 'string') {
     text += delta.text;
+  }
+  if (type === 'content_block_delta' && delta?.type === 'input_json_delta' && typeof delta.partial_json === 'string') {
+    text += delta.partial_json;
   }
   if (type === 'message_delta' && typeof delta?.stop_reason === 'string') {
     finishReason = delta.stop_reason;
@@ -272,12 +347,13 @@ export async function runAnthropicTransport(
   conn: AnthropicConnection,
   config: BenchmarkConfig,
   startTime: number,
+  extraBody: Record<string, unknown> = {},
 ): Promise<TransportOutcome> {
   let ttft = 0;
   let firstTokenReceived = false;
 
   // System messages are passed separately in the Anthropic API.
-  const systemMessage = config.messages?.find((m) => m.role === 'system');
+  const systemMessages = config.messages?.filter((m) => m.role === 'system');
   const userMessages = config.messages
     ? config.messages.filter((m) => m.role !== 'system')
     : [{ role: 'user' as const, content: config.prompt }];
@@ -292,15 +368,24 @@ export async function runAnthropicTransport(
   };
 
   const body = JSON.stringify({
+    ...extraBody,
     model: config.model,
     messages: userMessages,
     max_tokens: config.maxTokens || 3000,
-    ...(systemMessage ? { system: systemMessage.content } : {}),
-    ...(config.tools ? { tools: config.tools } : {}),
+    ...(systemMessages?.length ? {
+      system: systemMessages.map((m) => ({ type: 'text', text: m.content })),
+    } : {}),
+    ...(config.tools ? {
+      tools: config.tools.map(({ function: tool }) => ({
+        name: tool.name,
+        description: tool.description,
+        input_schema: tool.parameters,
+      })),
+    } : {}),
     stream: true,
   });
 
-  const res = await fetch(`${conn.baseURL}/v1/messages`, { method: 'POST', headers, body });
+  const res = await fetch(`${conn.baseURL}${conn.messagesPath ?? '/v1/messages'}`, { method: 'POST', headers, body });
   const host = (() => {
     try {
       return new URL(conn.baseURL).hostname;
@@ -372,6 +457,7 @@ export async function runAnthropicTransport(
 
   if (captureN && config.onChunkLog) config.onChunkLog(chunkLog);
 
+  if (!finishReason) throw new Error('Messages stream ended without a stop reason');
   return { response, ttft, totalTime: Date.now() - startTime, modelUsed, finishReason, flow };
 }
 

@@ -1,6 +1,6 @@
 import OpenAI from 'openai';
 import { AnthropicClientConfig, ApiMethod, BenchmarkConfig, BenchmarkResult, Gateway } from '../types.js';
-import { AnthropicConnection, ApiUnsupportedError, assembleResult, runAnthropicTransport, runOpenAITransport, runWarmup } from './transport.js';
+import { AnthropicConnection, ApiUnsupportedError, assembleResult, runAnthropicTransport, runOpenAITransport, runResponsesTransport, runWarmup } from './transport.js';
 
 export abstract class BaseGateway implements Gateway {
   abstract name: string;
@@ -23,6 +23,7 @@ export abstract class BaseGateway implements Gateway {
     if (anthropicConfig) {
       this.anthropicConn = {
         baseURL: anthropicConfig.baseURL,
+        messagesPath: anthropicConfig.messagesPath,
         authStyle: anthropicConfig.authStyle,
         apiKey,
         extraHeaders: anthropicConfig.extraHeaders,
@@ -34,21 +35,30 @@ export abstract class BaseGateway implements Gateway {
     return api === 'anthropic' ? !!this.anthropicConn : true;
   }
 
+  // Gateway-specific routing fields, kept out of shared benchmark configuration.
+  protected requestBody(_config: BenchmarkConfig): Record<string, unknown> {
+    return {};
+  }
+
   async execute(config: BenchmarkConfig): Promise<BenchmarkResult> {
+    config = { ...config, api: config.api ?? this.defaultApi };
     try {
-      const api = config.api ?? this.defaultApi;
+      const api = config.api;
+      const extraBody = this.requestBody(config);
       if (api === 'anthropic' && !this.anthropicConn) {
         throw new ApiUnsupportedError(`${this.name} does not support the anthropic (messages) API`);
       }
 
       if (config.warmup) {
-        await runWarmup(this.client, this.anthropicConn, config);
+        await runWarmup(this.client, this.anthropicConn, config, extraBody);
       }
 
       const startTime = Date.now();
       const outcome = api === 'anthropic'
-        ? await runAnthropicTransport(this.anthropicConn!, config, startTime)
-        : await runOpenAITransport(this.client, config, startTime);
+        ? await runAnthropicTransport(this.anthropicConn!, config, startTime, extraBody)
+        : api === 'responses'
+          ? await runResponsesTransport(this.client, config, startTime, extraBody)
+          : await runOpenAITransport(this.client, config, startTime, extraBody);
       return assembleResult(this.name, config, outcome);
     } catch (error) {
       return assembleResult(this.name, config, { error });
