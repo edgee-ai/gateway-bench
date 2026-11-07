@@ -318,7 +318,7 @@ function displayResults(results: BenchmarkResult[]) {
   };
 
   // Label the transport: messages = Anthropic API, chat = OpenAI Chat Completions.
-  const apiLabel = (api: BenchmarkResult['api']): string => (api === 'anthropic' ? 'messages' : 'chat');
+  const apiLabel = (api: BenchmarkResult['api']): string => (api === 'anthropic' ? 'messages' : api === 'responses' ? 'responses' : 'chat');
 
   Object.entries(groupedResults)
     .sort(([, a], [, b]) => {
@@ -454,7 +454,7 @@ program
         const resolvedApi = api ?? gateway.defaultApi;
         if (!gateway.supportsApi(resolvedApi)) continue;
 
-        const apiLabel = resolvedApi === 'anthropic' ? 'messages' : 'chat';
+        const apiLabel = resolvedApi === 'anthropic' ? 'messages' : resolvedApi === 'responses' ? 'responses' : 'chat';
         console.log(
           chalk.bold(`\n━━ ${gateway.name} `) +
             chalk.gray(`[${provider}/${modelTopLevelName}] `) +
@@ -677,7 +677,7 @@ program
   .option('--metric <metric>', 'ttft (default) | ttfb | total_time', 'ttft')
   .option('--min-n <number>', 'Minimum samples before a cell is shown', '30')
   .option('-s, --scenario <name>', 'Scenario filter', 'simple')
-  .option('--api <api>', 'Transport filter: openai | anthropic', '')
+  .option('--api <api>', 'Transport filter: openai | responses | anthropic', '')
   .option('--format <format>', 'table (default) | md | csv | json', 'table')
   .option('--no-common-window', 'Do not narrow the window to the range all gateways share')
   .action(async (options) => {
