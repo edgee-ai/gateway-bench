@@ -199,6 +199,9 @@ export async function runResponsesTransport(
     if (event.type === 'response.completed') finishReason = 'completed';
     if (event.type === 'response.incomplete') {
       finishReason = event.response.incomplete_details?.reason ?? 'incomplete';
+      if (!receivedContent) {
+        throw new Error(`Responses request incomplete without output: ${finishReason}`);
+      }
     }
   }
   if (config.debugChunks && config.onChunkLog) config.onChunkLog(chunkLog);

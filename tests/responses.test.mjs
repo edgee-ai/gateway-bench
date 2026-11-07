@@ -2,6 +2,7 @@ import assert from 'node:assert/strict';
 import test from 'node:test';
 import { readFileSync } from 'node:fs';
 import OpenAI from 'openai';
+import { OpenAIGateway } from '../dist/gateways/openai.js';
 import { runResponsesTransport, runWarmup } from '../dist/gateways/transport.js';
 
 const config = { model: 'gpt-5.6-luna', api: 'responses', prompt: 'Hello', maxTokens: 256 };
@@ -59,11 +60,30 @@ for (const [events, message] of [
   });
 }
 test('Responses preserves truncation reason', async () => {
-  const result = await runResponsesTransport(clientFor([{ type: 'response.incomplete', response: {
+  const result = await runResponsesTransport(clientFor([
+    { type: 'response.output_text.delta', delta: 'partial' },
+    { type: 'response.incomplete', response: {
     incomplete_details: { reason: 'max_output_tokens' }, model: config.model,
   } }]), config, Date.now());
   assert.equal(result.finishReason, 'max_output_tokens');
+  assert.equal(result.response, 'partial');
 });
+for (const reason of ['max_output_tokens', 'content_filter', undefined]) {
+  test(`Output-free incomplete response (${reason}) is a failed benchmark sample`, async () => {
+    const gateway = new OpenAIGateway('test-key');
+    gateway.client = clientFor([
+      { type: 'response.created', response: { model: config.model } },
+      { type: 'response.reasoning_summary_text.delta', delta: 'Thinking' },
+      { type: 'response.output_text.delta', delta: '' },
+      { type: 'response.incomplete', response: {
+        model: config.model, incomplete_details: reason ? { reason } : null,
+      } },
+    ]);
+    const result = await gateway.execute(config);
+    assert.equal(result.success, false);
+    assert.equal(result.error, `Responses request incomplete without output: ${reason ?? 'incomplete'}`);
+  });
+}
 test('Every configured OpenAI gateway explicitly uses Responses', () => {
   const models = JSON.parse(readFileSync(new URL('../models.json', import.meta.url)));
   const entries = models.providers.find(p => p.name === 'openai').models.flatMap(m => Object.values(m.gateways));
