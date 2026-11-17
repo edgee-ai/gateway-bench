@@ -88,13 +88,51 @@ Edit `.env` and add your API keys:
 
 **API method (transport) per gateway/model**:
 Each gateway entry is either a plain model string (uses the gateway's default transport) or an object that pins the transport:
+- `"responses"` → `POST /responses` relative to the gateway base URL (OpenAI Responses API)
 - `"openai"` → `POST /v1/chat/completions` (OpenAI SDK)
 - `"anthropic"` → `POST /v1/messages` (native Anthropic Messages endpoint)
 
 ```json
 "Edgee": { "model": "anthropic/claude-sonnet-4-6:anthropic", "api": "anthropic" }
 ```
-This lets you compare, for an Anthropic model, the gateway's native `/v1/messages` path against the `/v1/chat/completions` path (where the gateway must transform the request). The results table shows an **API** column (`messages` / `chat`); switch a gateway's entry between a plain string and `{ "api": "anthropic" }` and re-run to compare. Gateways with no native `/v1/messages` endpoint (e.g. TrueFoundry) simply stay on `chat`. A pinned `api` a gateway can't serve is skipped with a warning.
+All configured Anthropic models explicitly use `"api": "anthropic"` (Messages),
+including TrueFoundry, Orq.ai, Portkey, and Requesty. The CLI labels these runs
+`messages`. Set `"api": "openai"` explicitly for a Chat Completions comparison.
+TrueFoundry uses `https://gateway.truefoundry.ai/messages`; Orq.ai uses
+`https://my.orq.ai/v3/anthropic/v1/messages`; Requesty uses
+`https://router.requesty.ai/v1/messages`; Portkey uses
+`https://api.portkey.ai/v1/messages`. Warmups use the same endpoint and routing.
+System messages and tools are converted to the native Anthropic format
+(`system` text blocks and `input_schema`). Streaming errors and interrupted
+responses are reported as failures.
+
+All configured OpenAI models use `"api": "responses"`, including GPT-6 Luna.
+This sends `input`, `max_output_tokens`, and Responses-format tools with streaming
+and `store: false`. Warmups use the same transport. Results and the CLI identify
+these runs as `responses`; use `rank --api responses` to filter them.
+
+The SDK appends `/responses` to each gateway's base URL: `/v1/responses` for
+OpenAI direct and most gateways, `/api/v1/responses` for OpenRouter,
+`/responses` for TrueFoundry, `/v3/router/responses` for Orq.ai, and
+`/<account>/<gateway>/openai/responses` under Cloudflare's gateway API base.
+Gateway errors remain visible; there is no automatic fallback to Chat Completions.
+Anthropic entries use Messages. The legacy `openai` transport
+remains available for explicit Chat Completions comparisons.
+
+OpenRouter requests (including warmups) pin the inference provider with
+`provider: { only: ["openai"], allow_fallbacks: false }` for OpenAI models and
+`provider: { only: ["anthropic"], allow_fallbacks: false }` for Anthropic models. The `openai/` model prefix
+identifies the model author; this additional filter pins the inference provider.
+The base slug includes endpoint variants of the selected provider and excludes
+other providers such as Azure or Bedrock. If the selected provider is unavailable,
+the request fails instead of falling back. This applies to Responses, Chat
+Completions, and Anthropic Messages; other gateways are unchanged. See [OpenRouter provider routing](https://openrouter.ai/docs/guides/routing/provider-selection#base-slug-matching).
+
+Model access errors (`403`) require gateway configuration: enable the exact model
+under the configured provider connection in TrueFoundry (for example,
+`openai2/gpt-6-luna`), and have an administrator approve it in Requesty's
+[Model Library](https://app.requesty.ai/model-library) or the key/group access list.
+Changing the token parameter or endpoint does not grant model access.
 
 
 ### 3. Set Up BigQuery (Optional)

@@ -19,8 +19,9 @@ export class AnthropicGateway implements Gateway {
   }
 
   async execute(config: BenchmarkConfig): Promise<BenchmarkResult> {
+    config = { ...config, api: config.api ?? this.defaultApi };
     try {
-      const api = config.api ?? this.defaultApi;
+      const api = config.api;
       if (api !== 'anthropic') {
         throw new ApiUnsupportedError(`${this.name} only supports the anthropic (messages) API`);
       }

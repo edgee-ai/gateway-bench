@@ -4,15 +4,17 @@
       "name": "openai",
       "models": [
         {
-          "name": "gpt-5.4",
+          "name": "gpt-6-luna",
           "gateways": {
-            "OpenAI (Direct)": "gpt-5.4",
-            "Edgee": "gpt-5.4:openai",
-            "OpenRouter": "openai/gpt-5.4",
-            "TrueFoundry": "openai2/gpt-5.4",
-            "Vercel": "openai/gpt-5.4",
-            "Cloudflare": "gpt-5.4",
-            "Kong": "gpt-5.4"
+            "OpenAI (Direct)": {"model": "gpt-6-luna", "api": "responses"},
+            "Edgee": {"model": "gpt-6-luna:openai", "api": "responses"},
+            "OpenRouter": {"model": "openai/gpt-6-luna", "api": "responses"},
+            "TrueFoundry": {"model": "openai2/gpt-6-luna", "api": "responses"},
+            "Vercel": {"model": "openai/gpt-6-luna", "api": "responses"},
+            "Cloudflare": {"model": "gpt-6-luna", "api": "responses"},
+            "Orq.ai": {"model": "openai/gpt-6-luna", "api": "responses"},
+            "Portkey": {"model": "@benchmark-app/gpt-6-luna", "api": "responses"},
+            "Requesty": {"model": "gpt-6-luna", "api": "responses"}
           }
         }
       ]
@@ -21,15 +23,17 @@
       "name": "anthropic",
       "models": [
         {
-          "name": "claude-sonnet-4-6",
+          "name": "claude-sonnet-5-5",
           "gateways": {
-            "Anthropic (Direct)": "claude-sonnet-4-6",
-            "Edgee": { "model": "anthropic/claude-sonnet-4-6:anthropic", "api": "anthropic" },
-            "OpenRouter": { "model": "anthropic/claude-sonnet-4.6", "api": "anthropic" },
-            "TrueFoundry": "anthropic/claude-sonnet-4-6",
-            "Vercel": { "model": "anthropic/claude-sonnet-4.6", "api": "anthropic" },
-            "Cloudflare": { "model": "claude-sonnet-4-6", "api": "anthropic" },
-            "Kong": "claude-sonnet-4-6"
+            "Anthropic (Direct)": {"model": "claude-sonnet-5-5", "api": "anthropic"},
+            "Edgee": { "model": "anthropic/claude-sonnet-5-5:anthropic", "api": "anthropic" },
+            "OpenRouter": { "model": "anthropic/claude-sonnet-5-5", "api": "anthropic" },
+            "TrueFoundry": {"model": "anthropic/claude-sonnet-5-5", "api": "anthropic"},
+            "Vercel": { "model": "anthropic/claude-sonnet-5-5", "api": "anthropic" },
+            "Cloudflare": { "model": "claude-sonnet-5-5", "api": "anthropic" },
+            "Orq.ai": {"model": "anthropic/claude-sonnet-5-5", "api": "anthropic"},
+            "Portkey": {"model": "@benchmark-app-anthropic/claude-sonnet-5-5", "api": "anthropic"},
+            "Requesty": {"model": "claude-sonnet-5-5", "api": "anthropic"}
           }
         }
       ]

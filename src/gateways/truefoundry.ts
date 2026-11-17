@@ -4,6 +4,10 @@ export class TrueFoundryGateway extends BaseGateway {
   name = 'TrueFoundry';
 
   constructor(apiKey: string) {
-    super(apiKey, 'https://gateway.truefoundry.ai');
+    super(apiKey, 'https://gateway.truefoundry.ai', undefined, {
+      baseURL: 'https://gateway.truefoundry.ai',
+      authStyle: 'bearer',
+      messagesPath: '/messages',
+    });
   }
 }

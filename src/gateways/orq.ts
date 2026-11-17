@@ -4,6 +4,9 @@ export class OrqGateway extends BaseGateway {
   name = 'Orq.ai';
 
   constructor(apiKey: string) {
-    super(apiKey, 'https://my.orq.ai/v3/router');
+    super(apiKey, 'https://my.orq.ai/v3/router', undefined, {
+      baseURL: 'https://my.orq.ai/v3/anthropic',
+      authStyle: 'bearer',
+    });
   }
 }
